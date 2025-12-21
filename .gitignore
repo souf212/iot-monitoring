@@ -1,0 +1,122 @@
+# .NET
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.so
+*.dylib
+*.suo
+*.sln.docstates
+.vs/
+.vscode/
+Properties/launchSettings.json
+
+# Fichiers de migration Entity Framework
+Migrations/
+
+# Base de données
+*.db
+*.sqlite
+*.sqlite3
+*.mdf
+*.ldf
+
+# Fichiers de configuration sensibles
+appsettings.*.json
+!appsettings.Development.json
+!appsettings.json
+
+# Certificats SSL
+*.pfx
+*.cer
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Environnement virtuel Python
+venv/
+ENV/
+env/
+.venv
+
+# Logs Python
+*.log
+logs/
+*.log.*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-workspace
+
+# Système d'exploitation
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Données sensibles
+secrets.json
+*.key
+*.pem
+
+# Cache
+.cache/
+.pytest_cache/
+
+# Sortie de facial recognition
+RH-Manager/facial_recognition_system/employees/
+RH-Manager/facial_recognition_system/models/*.pkl
+RH-Manager/facial_recognition_system/logs/
+
+# Fichiers générés
+contrat_generator/outputs/
+*.pdf
+!templates/
+
+# Fichiers temporaires
+temp/
+tmp/
+*.tmp
+
+# Node modules (si Bootstrap est géré via npm)
+node_modules/
+
+# Fichiers de verrouillage de projet
+.lock
+
+# Tests
+.coverage
+htmlcov/
+
+# Certificats de développement
+*.crt
+
+# Fichiers de base de données locaux
+*.sqlite-journal
