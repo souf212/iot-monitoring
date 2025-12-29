@@ -86,7 +86,7 @@ Ce projet combine **hardware IoT** (ESP8266 + DHT11) et **software full-stack** 
          │    Django Backend         │
          │  - REST API               │
          │  - MQTT Subscriber        │
-         │  - PostgreSQL/SQLite      │
+         │  - SQLite (PostgreSQL)    │
          └───────────────────────────┘
                          ↓
          ┌───────────────────────────┐
@@ -105,7 +105,7 @@ Ce projet combine **hardware IoT** (ESP8266 + DHT11) et **software full-stack** 
 - **Django 5.2** - Framework web Python
 - **Django REST Framework** - API REST
 - **Paho MQTT** - Client MQTT Python
-- **PostgreSQL/SQLite** - Base de données
+- **SQLite** - Base de données (PostgreSQL supporté)
 - **JWT** - Authentification
 
 ### Frontend
@@ -130,7 +130,8 @@ Ce projet combine **hardware IoT** (ESP8266 + DHT11) et **software full-stack** 
 - Python 3.11+
 - Node.js 18+
 - Mosquitto MQTT Broker
-- PostgreSQL (optionnel, SQLite par défaut)
+- **SQLite** (inclus avec Python, aucune installation requise)
+- PostgreSQL (optionnel pour production)
 
 ### 1. Cloner le repository
 
@@ -205,8 +206,10 @@ SECRET_KEY=votre-secret-key-django
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
 
-# Base de données (optionnel)
-DATABASE_URL=postgresql://user:password@localhost:5432/iot_db
+# Base de données
+# SQLite est utilisé par défaut (db.sqlite3)
+# Pour PostgreSQL, décommenter la ligne suivante :
+# DATABASE_URL=postgresql://user:password@localhost:5432/iot_db
 
 # MQTT
 MQTT_BROKER_HOST=localhost
