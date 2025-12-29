@@ -1,122 +1,66 @@
-# .NET
-bin/
-obj/
-*.dll
-*.exe
-*.pdb
-*.so
-*.dylib
-*.suo
-*.sln.docstates
-.vs/
-.vscode/
-Properties/launchSettings.json
-
-# Fichiers de migration Entity Framework
-Migrations/
-
-# Base de données
-*.db
-*.sqlite
-*.sqlite3
-*.mdf
-*.ldf
-
-# Fichiers de configuration sensibles
-appsettings.*.json
-!appsettings.Development.json
-!appsettings.json
-
-# Certificats SSL
-*.pfx
-*.cer
-
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# Environnement virtuel Python
 venv/
-ENV/
 env/
-.venv
+ENV/
+*.egg-info/
+dist/
+build/
+*.egg
 
-# Logs Python
+# Django
 *.log
-logs/
-*.log.*
+*.pot
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
 
-# IDE
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# React Build
+frontend/build/
+frontend/.env
+frontend/.env.local
+frontend/.env.production
+
+# IDEs
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 .DS_Store
-*.sublime-workspace
 
-# Système d'exploitation
-.DS_Store
-Thumbs.db
-Desktop.ini
-
-# Données sensibles
-secrets.json
-*.key
-*.pem
-
-# Cache
-.cache/
-.pytest_cache/
-
-# Sortie de facial recognition
-RH-Manager/facial_recognition_system/employees/
-RH-Manager/facial_recognition_system/models/*.pkl
-RH-Manager/facial_recognition_system/logs/
-
-# Fichiers générés
-contrat_generator/outputs/
-*.pdf
-!templates/
-
-# Fichiers temporaires
-temp/
-tmp/
-*.tmp
-
-# Node modules (si Bootstrap est géré via npm)
-node_modules/
-
-# Fichiers de verrouillage de projet
-.lock
-
-# Tests
+# Testing
 .coverage
 htmlcov/
+.pytest_cache/
+.tox/
 
-# Certificats de développement
+# OS
+Thumbs.db
+*.bak
+
+# Certificates & Keys
+*.pem
+*.key
 *.crt
 
-# Fichiers de base de données locaux
-*.sqlite-journal
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
