@@ -47,103 +47,97 @@ export default function Dashboard() {
   const userRole = currentUser?.profile?.role || currentUser?.role || null;
 
   return (
-    <div className="min-h-screen p-4 md:p-6 lg:p-8">
+    <div className="min-h-screen bg-background-900 text-primary p-4 md:p-6 lg:p-8 overflow-hidden relative">
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none"></div>
+
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-7xl mx-auto"
+        transition={{ duration: 0.8 }}
+        className="max-w-7xl mx-auto relative z-10"
       >
         {/* Header */}
-        <Header
-          mqttConnected={mqttConnected}
-          onLogout={logout}
-          userRole={userRole}
-        />
-
-        {/* Main Content */}
-        <div className="space-y-6">
-          {/* KPI Cards Grid */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-              <span className="w-1 h-6 bg-cyber-cyan rounded"></span>
-              Real-time Metrics
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sensorLoading ? (
-                <>
-                  <CardSkeleton />
-                  <CardSkeleton />
-                  <CardSkeleton />
-                </>
-              ) : sensorError ? (
-                <div className="col-span-full">
-                  <ErrorState message={sensorError} onRetry={refetch} />
-                </div>
-              ) : (
-                <>
-                  <TemperatureSensor
-                    temperature={sensorData?.temperature}
-                    timestamp={sensorData?.created_at}
-                    trend={tempTrend}
-                    loading={sensorLoading}
-                  />
-
-                  <HumiditySensor
-                    humidity={sensorData?.humidity}
-                    timestamp={sensorData?.created_at}
-                    trend={humidityTrend}
-                    loading={sensorLoading}
-                  />
-
-                  <LEDControl />
-                </>
-              )}
-            </div>
-          </motion.div>
-
-          {/* Charts and Activity */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="grid grid-cols-1 lg:grid-cols-3 gap-6"
-          >
-            {/* Historical Chart - Takes 2 columns on large screens */}
-            <div className="lg:col-span-2">
-              <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                <span className="w-1 h-6 bg-cyber-blue rounded"></span>
-                Historical Trends
-              </h2>
-              <CombinedChart sensorId={DEFAULT_SENSOR_ID} />
-            </div>
-
-            {/* Activity Log - Takes 1 column on large screens */}
-            <div>
-              <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                <span className="w-1 h-6 bg-cyber-green rounded"></span>
-                Live Events
-              </h2>
-              <ActivityLog sensorId={DEFAULT_SENSOR_ID} maxItems={10} />
-            </div>
-          </motion.div>
-
-          {/* Footer Info */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="text-center text-gray-500 text-sm py-4"
-          >
-            <p>IoT Climate Monitor • Real-time environmental monitoring system</p>
-            <p className="mt-1">ESP8266 + DHT11 + MQTT + Django + React</p>
-          </motion.div>
+        <div className="mb-8">
+          <Header
+            mqttConnected={mqttConnected}
+            onLogout={logout}
+            userRole={userRole}
+          />
         </div>
+
+        {/* Bento Grid Layout */}
+        <motion.div
+          className="bento-grid"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, staggerChildren: 0.1 }}
+        >
+          {/* Row 1: Key Metrics & Control */}
+          {sensorLoading ? (
+            <>
+              <div className="md:col-span-2"><CardSkeleton /></div>
+              <div className="md:col-span-2"><CardSkeleton /></div>
+              <div className="md:col-span-2"><CardSkeleton /></div>
+            </>
+          ) : sensorError ? (
+            <div className="col-span-full">
+              <ErrorState message={sensorError} onRetry={refetch} />
+            </div>
+          ) : (
+            <>
+              <motion.div className="md:col-span-2" whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 300 }}>
+                <TemperatureSensor
+                  temperature={sensorData?.temperature}
+                  timestamp={sensorData?.created_at}
+                  trend={tempTrend}
+                  loading={sensorLoading}
+                />
+              </motion.div>
+
+              <motion.div className="md:col-span-2" whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 300 }}>
+                <HumiditySensor
+                  humidity={sensorData?.humidity}
+                  timestamp={sensorData?.created_at}
+                  trend={humidityTrend}
+                  loading={sensorLoading}
+                />
+              </motion.div>
+
+              <motion.div className="md:col-span-2" whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 300 }}>
+                <LEDControl />
+              </motion.div>
+            </>
+          )}
+
+          {/* Row 2: Charts & Logs */}
+          <motion.div className="md:col-span-4 row-span-2 glass-card p-4 min-h-[400px]">
+            <h2 className="text-lg font-medium text-secondary mb-4 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 bg-primary-500 rounded-full animate-pulse"></span>
+              Environmental Trends
+            </h2>
+            <CombinedChart sensorId={DEFAULT_SENSOR_ID} />
+          </motion.div>
+
+          <motion.div className="md:col-span-2 row-span-2 glass-card p-4 h-full">
+            <h2 className="text-lg font-medium text-secondary mb-4 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 bg-accent-cyan rounded-full"></span>
+              System Activity
+            </h2>
+            <ActivityLog sensorId={DEFAULT_SENSOR_ID} maxItems={8} />
+          </motion.div>
+
+        </motion.div>
+
+        {/* Footer Info */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="text-center text-muted text-xs py-8 mt-4"
+        >
+          <p>IoT Climate Monitor • v2.0 Deep Space Edition</p>
+        </motion.div>
+
       </motion.div>
     </div>
   );

@@ -89,40 +89,46 @@ const CombinedChart = ({ sensorId = 1 }) => {
             <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={data}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                         <XAxis
                             dataKey="time"
-                            stroke="#718096"
-                            tick={{ fill: '#718096', fontSize: 12 }}
-                            tickLine={{ stroke: '#718096' }}
+                            stroke="#64748b"
+                            tick={{ fill: '#94a3b8', fontSize: 11 }}
+                            tickLine={{ stroke: '#334155' }}
+                            axisLine={{ stroke: '#334155' }}
+                            dy={10}
                         />
                         <YAxis
                             yAxisId="temp"
-                            stroke="#ff9f40"
-                            tick={{ fill: '#ff9f40', fontSize: 12 }}
-                            label={{ value: 'Temperature (°C)', angle: -90, position: 'insideLeft', fill: '#ff9f40' }}
+                            stroke="#6366f1"
+                            tick={{ fill: '#6366f1', fontSize: 11 }}
+                            label={{ value: 'Temperature (°C)', angle: -90, position: 'insideLeft', fill: '#6366f1', fontSize: 12 }}
+                            axisLine={false}
+                            tickLine={false}
                         />
                         <YAxis
                             yAxisId="humidity"
                             orientation="right"
-                            stroke="#00f0ff"
-                            tick={{ fill: '#00f0ff', fontSize: 12 }}
-                            label={{ value: 'Humidity (%)', angle: 90, position: 'insideRight', fill: '#00f0ff' }}
+                            stroke="#06b6d4"
+                            tick={{ fill: '#06b6d4', fontSize: 11 }}
+                            label={{ value: 'Humidity (%)', angle: 90, position: 'insideRight', fill: '#06b6d4', fontSize: 12 }}
+                            axisLine={false}
+                            tickLine={false}
                         />
-                        <Tooltip content={<CustomTooltip />} />
+                        <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 2 }} />
                         <Legend
-                            wrapperStyle={{ color: '#fff' }}
-                            iconType="line"
+                            wrapperStyle={{ color: '#94a3b8', fontSize: '12px' }}
+                            iconType="circle"
                         />
                         <Line
                             yAxisId="temp"
                             type="monotone"
                             dataKey="temperature"
                             name="Temperature"
-                            stroke="#ff9f40"
-                            strokeWidth={2}
-                            dot={{ fill: '#ff9f40', r: 3 }}
-                            activeDot={{ r: 5 }}
+                            stroke="#6366f1"
+                            strokeWidth={3}
+                            dot={{ fill: '#1e293b', stroke: '#6366f1', strokeWidth: 2, r: 4 }}
+                            activeDot={{ r: 6, fill: '#6366f1', stroke: '#fff' }}
                             animationDuration={CHART_CONFIG.ANIMATION_DURATION}
                         />
                         <Line
@@ -130,10 +136,10 @@ const CombinedChart = ({ sensorId = 1 }) => {
                             type="monotone"
                             dataKey="humidity"
                             name="Humidity"
-                            stroke="#00f0ff"
-                            strokeWidth={2}
-                            dot={{ fill: '#00f0ff', r: 3 }}
-                            activeDot={{ r: 5 }}
+                            stroke="#06b6d4"
+                            strokeWidth={3}
+                            dot={{ fill: '#1e293b', stroke: '#06b6d4', strokeWidth: 2, r: 4 }}
+                            activeDot={{ r: 6, fill: '#06b6d4', stroke: '#fff' }}
                             animationDuration={CHART_CONFIG.ANIMATION_DURATION}
                         />
                     </LineChart>

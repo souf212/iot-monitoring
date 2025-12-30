@@ -36,7 +36,7 @@ const HumiditySensor = ({ humidity, timestamp, trend = 'stable', loading = false
                 {/* Main Humidity Display */}
                 <div className="flex items-baseline gap-2">
                     {loading ? (
-                        <div className="h-16 w-32 bg-dark-600 animate-pulse rounded" />
+                        <div className="h-16 w-32 bg-background-700 animate-pulse rounded" />
                     ) : (
                         <>
                             <motion.div
@@ -44,12 +44,11 @@ const HumiditySensor = ({ humidity, timestamp, trend = 'stable', loading = false
                                 initial={{ scale: 0.8, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 transition={{ type: 'spring', stiffness: 200 }}
-                                className="text-5xl font-bold"
-                                style={{ color }}
+                                className="text-5xl font-bold bg-gradient-to-br from-white to-gray-400 bg-clip-text text-transparent"
                             >
                                 {humidity !== null ? humidity.toFixed(1) : '--'}
                             </motion.div>
-                            <span className="text-2xl text-gray-400">%</span>
+                            <span className="text-2xl text-muted">%</span>
                         </>
                     )}
                 </div>
@@ -57,51 +56,54 @@ const HumiditySensor = ({ humidity, timestamp, trend = 'stable', loading = false
                 {/* Status and Trend */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <span className="px-3 py-1 rounded-full text-xs font-medium" style={{
-                            backgroundColor: `${color}20`,
-                            color
+                        <span className="px-3 py-1 rounded-full text-xs font-medium border border-white/10" style={{
+                            backgroundColor: `${color}15`,
+                            color: color,
+                            borderColor: `${color}30`
                         }}>
                             {status}
                         </span>
                         {TrendIcon && (
-                            <TrendIcon size={16} className="text-gray-400" />
+                            <TrendIcon size={16} className="text-muted" />
                         )}
                     </div>
 
-                    <div className="text-sm text-gray-400">
+                    <div className="text-sm text-muted">
                         {timestamp ? formatRelativeTime(timestamp) : 'No data'}
                     </div>
                 </div>
 
                 {/* Humidity Gauge */}
-                <div className="space-y-2">
-                    <div className="flex justify-between text-xs text-gray-500">
-                        <span>0%</span>
-                        <span className="font-medium" style={{ color }}>
+                <div className="space-y-3 pt-2">
+                    <div className="flex justify-between text-[10px] uppercase tracking-wider text-muted font-medium">
+                        <span>Dry</span>
+                        <span style={{ color }}>
                             {humidity !== null ? `${humidity.toFixed(0)}%` : '--'}
                         </span>
-                        <span>100%</span>
+                        <span>Wet</span>
                     </div>
-                    <div className="h-3 bg-dark-700 rounded-full overflow-hidden">
+                    <div className="h-2 bg-background-700 rounded-full overflow-hidden border border-white/5">
                         <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: `${percentage}%` }}
                             transition={{ duration: 0.5, ease: 'easeOut' }}
-                            className="h-full rounded-full"
+                            className="h-full rounded-full relative overflow-hidden"
                             style={{
-                                background: `linear-gradient(90deg, ${color}80, ${color})`,
-                                boxShadow: `0 0 10px ${color}50`
+                                background: `linear-gradient(90deg, ${color}40, ${color})`,
+                                boxShadow: `0 0 15px ${color}60`
                             }}
-                        />
+                        >
+                            <div className="absolute inset-0 bg-white/20 animate-pulse" />
+                        </motion.div>
                     </div>
                 </div>
 
                 {/* View History Button */}
                 <button
                     onClick={() => navigate('/humidity/history')}
-                    className="w-full mt-4 py-2.5 px-4 bg-gradient-to-r from-cyan-600/20 to-blue-600/20 hover:from-cyan-600/30 hover:to-blue-600/30 border border-cyan-500/30 hover:border-cyan-500/50 rounded-lg text-sm font-medium text-cyan-300 transition-all duration-200 flex items-center justify-center gap-2"
+                    className="w-full mt-6 py-2.5 px-4 bg-background-800 hover:bg-background-700 border border-white/5 hover:border-accent-cyan/30 rounded-lg text-sm font-medium text-secondary hover:text-accent-cyan transition-all duration-200 flex items-center justify-center gap-2 group"
                 >
-                    <BarChart3 size={16} />
+                    <BarChart3 size={16} className="group-hover:scale-110 transition-transform" />
                     View History
                 </button>
             </div>

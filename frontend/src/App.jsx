@@ -1,10 +1,12 @@
 // App.jsx
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import PageTransition from "./components/ui/PageTransition";
 import PrivateRoute from "./Security/private-route";
-import TemperatureHistory from "./pages/TemperatureHistory"; 
+import TemperatureHistory from "./pages/TemperatureHistory";
 import HumidityHistory from "./pages/HumidityHistory";
 import IncidentsHistory from "./pages/IncidentsHistory";
 import SensorManagement from "./pages/SensorManagement";
@@ -12,60 +14,124 @@ import AuditLogsHistory from "./pages/AuditLogsHistory";
 import Tickets from "./pages/Tickets";
 import Users from "./pages/Users";
 
-export default function App() { 
+// AnimatedRoutes component to handle transitions
+const AnimatedRoutes = () => {
+  const location = useLocation();
+
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route 
-          path="/" 
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route
+          path="/"
           element={
             <PrivateRoute>
-              <Dashboard />
+              <PageTransition>
+                <Dashboard />
+              </PageTransition>
             </PrivateRoute>
           }
         />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route 
+        <Route
+          path="/login"
+          element={
+            <PageTransition>
+              <Login />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <PageTransition>
+              <Register />
+            </PageTransition>
+          }
+        />
+        <Route
           path="/dashboard"
           element={
             <PrivateRoute>
-              <Dashboard />
+              <PageTransition>
+                <Dashboard />
+              </PageTransition>
             </PrivateRoute>
-          } 
+          }
         />
-        <Route 
+        <Route
           path="/users"
           element={
             <PrivateRoute>
-              <Users />
+              <PageTransition>
+                <Users />
+              </PageTransition>
             </PrivateRoute>
-          } 
+          }
         />
         <Route
           path="/sensors"
           element={
-              <PrivateRoute>
-                  <SensorManagement />
-              </PrivateRoute>
+            <PrivateRoute>
+              <PageTransition>
+                <SensorManagement />
+              </PageTransition>
+            </PrivateRoute>
           }
         />
         <Route
           path="/tickets"
           element={
-              <PrivateRoute>
-                  <Tickets />
-              </PrivateRoute>
+            <PrivateRoute>
+              <PageTransition>
+                <Tickets />
+              </PageTransition>
+            </PrivateRoute>
           }
         />
-        <Route path="/temperature/history" element={<TemperatureHistory />} />
-        <Route path="/humidity/history" element={<HumidityHistory />} />
-        <Route path="/incidents/history" element={<IncidentsHistory />} />
-        <Route path="/audit" element={<AuditLogsHistory />} />
-        <Route path="*" element={<h2>404 - Page non trouvée</h2>} />
+        <Route
+          path="/temperature/history"
+          element={
+            <PageTransition>
+              <TemperatureHistory />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/humidity/history"
+          element={
+            <PageTransition>
+              <HumidityHistory />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/incidents/history"
+          element={
+            <PageTransition>
+              <IncidentsHistory />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/audit"
+          element={
+            <PageTransition>
+              <AuditLogsHistory />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <PageTransition>
+              <h2 className="text-center text-white mt-10">404 - Page non trouvée</h2>
+            </PageTransition>
+          }
+        />
       </Routes>
-    </BrowserRouter>
+    </AnimatePresence>
   );
+};
+
+export default function App() {
+  return <AnimatedRoutes />;
 }
-
-

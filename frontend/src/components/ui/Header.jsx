@@ -19,22 +19,22 @@ const Header = ({ mqttConnected = false, onLogout, userRole = null }) => {
     const canViewAuditLogs = userRole === 'manager' || userRole === 'supervisor';
 
     return (
-        <header className="glass-card mb-8 p-4">
+        <header className="glass-card mb-8 p-4 bg-background-800/80 sticky top-4 z-40 backdrop-blur-xl border-white/10 shadow-lg">
             <div className="flex items-center justify-between flex-wrap gap-4">
                 {/* Logo and Title */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
                     <motion.div
                         animate={{ rotate: mqttConnected ? 360 : 0 }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                        className="text-cyber-cyan"
+                        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                        className="p-2 bg-gradient-to-br from-primary-500 to-indigo-600 rounded-lg shadow-lg shadow-primary-500/30"
                     >
-                        <Activity size={32} strokeWidth={2.5} />
+                        <Activity size={24} className="text-white" strokeWidth={2.5} />
                     </motion.div>
                     <div>
-                        <h1 className="text-2xl font-bold text-gradient">
-                            IoT Climate Monitor
+                        <h1 className="text-xl font-bold text-white tracking-tight">
+                            IoT Climate<span className="text-primary-400">Monitor</span>
                         </h1>
-                        <p className="text-sm text-gray-400">Real-time environmental monitoring</p>
+                        <p className="text-xs text-muted font-medium uppercase tracking-wider">Deep Space Overview</p>
                     </div>
                 </div>
 
@@ -44,25 +44,24 @@ const Header = ({ mqttConnected = false, onLogout, userRole = null }) => {
                         initial={{ scale: 0.9 }}
                         animate={{ scale: 1 }}
                         transition={{ duration: 0.3 }}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg ${mqttConnected
-                                ? 'bg-green-500/20 border border-green-500/50'
-                                : 'bg-red-500/20 border border-red-500/50'
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-300 ${mqttConnected
+                            ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.1)]'
+                            : 'bg-rose-500/10 border-rose-500/20 text-rose-400'
                             }`}
                     >
                         {mqttConnected ? (
                             <>
-                                <Wifi size={18} className="text-green-400" />
-                                <span className="text-sm font-medium text-green-400">Connected</span>
-                                <motion.div
-                                    animate={{ opacity: [1, 0.3, 1] }}
-                                    transition={{ duration: 2, repeat: Infinity }}
-                                    className="w-2 h-2 bg-green-400 rounded-full"
-                                />
+                                <Wifi size={14} />
+                                <span className="text-xs font-semibold">ONLINE</span>
+                                <span className="flex h-2 w-2 relative">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                </span>
                             </>
                         ) : (
                             <>
-                                <WifiOff size={18} className="text-red-400" />
-                                <span className="text-sm font-medium text-red-400">Disconnected</span>
+                                <WifiOff size={14} />
+                                <span className="text-xs font-semibold">OFFLINE</span>
                             </>
                         )}
                     </motion.div>
@@ -73,9 +72,9 @@ const Header = ({ mqttConnected = false, onLogout, userRole = null }) => {
                     {canManageUsers && (
                         <button
                             onClick={() => navigate('/users')}
-                            className="flex items-center gap-2 px-4 py-2 bg-primary-600/20 hover:bg-primary-600/40 border border-primary-500/50 text-primary-300 rounded-lg transition-all duration-200"
+                            className="flex items-center gap-2 px-3 py-2 text-sm text-secondary hover:text-white rounded-lg hover:bg-white/5 transition-colors"
                         >
-                            <Users size={18} />
+                            <Users size={16} />
                             <span className="hidden sm:inline">Users</span>
                         </button>
                     )}
@@ -83,9 +82,9 @@ const Header = ({ mqttConnected = false, onLogout, userRole = null }) => {
                     {canManageSensors && (
                         <button
                             onClick={() => navigate('/sensors')}
-                            className="flex items-center gap-2 px-4 py-2 bg-primary-600/20 hover:bg-primary-600/40 border border-primary-500/50 text-primary-300 rounded-lg transition-all duration-200"
+                            className="flex items-center gap-2 px-3 py-2 text-sm text-secondary hover:text-white rounded-lg hover:bg-white/5 transition-colors"
                         >
-                            <Settings size={18} />
+                            <Settings size={16} />
                             <span className="hidden sm:inline">Sensors</span>
                         </button>
                     )}
@@ -93,18 +92,20 @@ const Header = ({ mqttConnected = false, onLogout, userRole = null }) => {
                     {canViewAuditLogs && (
                         <button
                             onClick={() => navigate('/audit')}
-                            className="flex items-center gap-2 px-4 py-2 bg-primary-600/20 hover:bg-primary-600/40 border border-primary-500/50 text-primary-300 rounded-lg transition-all duration-200"
+                            className="flex items-center gap-2 px-3 py-2 text-sm text-secondary hover:text-white rounded-lg hover:bg-white/5 transition-colors"
                         >
-                            <FileText size={18} />
+                            <FileText size={16} />
                             <span className="hidden sm:inline">Audit</span>
                         </button>
                     )}
 
+                    <div className="h-6 w-px bg-white/10 mx-2 hidden sm:block"></div>
+
                     <button
                         onClick={onLogout}
-                        className="flex items-center gap-2 px-4 py-2 bg-red-600/20 hover:bg-red-600/40 border border-red-500/50 text-red-300 rounded-lg transition-all duration-200"
+                        className="flex items-center gap-2 px-3 py-2 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/10 hover:border-rose-500/30 text-rose-300 rounded-lg transition-all duration-200"
                     >
-                        <LogOut size={18} />
+                        <LogOut size={16} />
                         <span className="hidden sm:inline">Logout</span>
                     </button>
                 </div>

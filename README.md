@@ -314,6 +314,18 @@ GET    /api/audit/                       # Logs d'audit
 GET    /api/audit/export/                # Export CSV
 ```
 
+---
+
+## 📸 Captures d'écran
+
+### Dashboard Principal
+Interface moderne avec glassmorphism et animations temps réel.
+
+### Graphiques Historiques
+Visualisation des tendances avec filtrage par date et statistiques.
+
+### Gestion des Utilisateurs
+Interface d'administration avec gestion des rôles.
 
 ---
 
@@ -382,7 +394,30 @@ Les contributions sont les bienvenues ! Pour contribuer :
 ## 📄 Licence
 
 Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
- 
+
+---
+
+## 👤 Auteur
+
+**Votre Nom**
+- GitHub: [@votre-username](https://github.com/votre-username)
+- LinkedIn: [Votre Profil](https://linkedin.com/in/votre-profil)
+
+---
+
+## 🙏 Remerciements
+
+- Django & Django REST Framework
+- React & Tailwind CSS
+- Mosquitto MQTT
+- ESP8266 Community
+
+---
+
+## 📞 Support
+
+Pour toute question ou problème, ouvrir une [issue](https://github.com/votre-username/IoT-Climate-Monitor/issues).
+
 ---
 
 **⭐ Si ce projet vous a aidé, n'hésitez pas à lui donner une étoile !**
