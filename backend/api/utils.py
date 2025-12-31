@@ -57,7 +57,30 @@ def send_alert_telegram(user, sensor, measurement, msg):
         pass
 
 
+def send_callmebot_voice(msg):
+    """
+    Envoie un appel vocal Telegram via CallMeBot.
+    Nécessite CALLMEBOT_USERNAME et CALLMEBOT_API_KEY dans settings.
+    """
+    username = getattr(settings, 'CALLMEBOT_USERNAME', None)
+    api_key = getattr(settings, 'CALLMEBOT_API_KEY', None)
+
+    if not username or not api_key or "CHANGE_ME" in username:
+        return  # Pas configuré
+
+    # Encoder le message pour l'URL
+    import urllib.parse
+    encoded_msg = urllib.parse.quote(msg)
+
+    url = f"http://api.callmebot.com/start.php?user={username}&text={encoded_msg}&apikey={api_key}&lang=fr-FR-Standard-C&rpt=2"
+
+    try:
+        requests.get(url, timeout=10)
+    except Exception:
+        pass
+
+
 def send_alert_notification(sensor, measurement):
-    """Envoie email + Telegram"""
+    """Envoie email + Telegram + Voice Call"""
     send_alert_email(sensor, measurement)
     send_alert_telegram(sensor, measurement)

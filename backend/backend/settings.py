@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-%lbvw$_hgp03qn433pq-#p8ts-=o&0msqx9&0sq-1ryls=#_d$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']  # En prod, mettez ['votreuser.pythonanywhere.com']
 
 
 # Application definition
@@ -125,7 +125,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR/'static']
+STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -156,9 +157,11 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "elmir.ahmed9@gmail.com"
-EMAIL_HOST_PASSWORD = "zofd ddcd swib zwkw"
-TELEGRAM_BOT_TOKEN = "8394795122:AAEvbxYUGaJ-stLYwGLWK34FA61RUIxVgYQ"
-TELEGRAM_CHAT_ID = "1233303327"
+EMAIL_HOST_USER = "souf2001elotmani@gmail.com"
+EMAIL_HOST_PASSWORD = "khdv jexx ycje urnx"
+TELEGRAM_BOT_TOKEN = "8573703765:AAE7V_E9NC-g9l5MvBYUwJpksOrcFK-U0f4"
+TELEGRAM_CHAT_ID = "927378003"
+CALLMEBOT_USERNAME = "@CHANGE_ME"  # Mettez votre username Telegram (ex: @souf212)
+CALLMEBOT_API_KEY = "CHANGE_ME"    # Obtenu via @CallMeBot_txtbot
 
 

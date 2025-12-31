@@ -1,9 +1,7 @@
 // Custom hook for LED control operations
 import { useState, useCallback } from 'react';
 import axios from 'axios';
-import { LED_STATES } from '../utils/constants';
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+import { LED_STATES, API_BASE_URL } from '../utils/constants';
 
 /**
  * Hook to manage LED control state and operations

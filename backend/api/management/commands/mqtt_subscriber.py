@@ -1,7 +1,8 @@
 import json
 import paho.mqtt.client as mqtt
 from django.core.management.base import BaseCommand
-from api.models import Dht11, Sensor, Measurement
+from api.models import Dht11, Sensor, Measurement, Ticket, IncidentAcknowledgement, AuditLog
+from api.escalation import escalation_process
 from django.utils import timezone
 
 
@@ -55,6 +56,44 @@ class Command(BaseCommand):
                             humidity=humidity,
                             status="OK"
                         )
+                        # --- VERIFICATION ALERTE ---
+                        m = Measurement.objects.filter(sensor=sensor_obj).last()
+
+                        # 1. Loguer la réception (comme le fait le Serializer)
+                        AuditLog.objects.create(
+                            action="MEASUREMENT_RECEIVED",
+                            sensor=sensor_obj,
+                            details=f"Temp={temperature}, Hum={humidity}"
+                        )
+
+                        if temperature < sensor_obj.min_temp or temperature > sensor_obj.max_temp:
+                            self.stdout.write(self.style.WARNING(f"🔥 Alerte détectée sur {sensor_id}: {temperature}°C"))
+                            m.status = "ALERT"
+                            m.save()
+                            
+                            # Accusés de réception
+                            for level in ["USER", "MANAGER", "SUPERVISOR"]:
+                                IncidentAcknowledgement.objects.get_or_create(
+                                    measurement=m,
+                                    level=level
+                                )
+
+                            # Log Audit Alerte
+                            AuditLog.objects.create(
+                                action="ALERT_TRIGGERED",
+                                sensor=sensor_obj,
+                                details=f"Temp={temperature} dépasse [{sensor_obj.min_temp} - {sensor_obj.max_temp}]"
+                            )
+
+                            # Escalade (Mail/Telegram)
+                            escalation_process(sensor_obj, m)
+                            
+                        else:
+                            if sensor_obj.alert_count > 0:
+                                sensor_obj.alert_count = 0
+                                sensor_obj.save()
+                                self.stdout.write(self.style.SUCCESS(f"✅ Retour à la normale pour {sensor_id}"))
+
                         self.stdout.write(self.style.SUCCESS(f"✅ Saved to Measurement (Sensor {sensor_id})"))
                     else:
                         self.stdout.write(self.style.WARNING(f"⚠️ Capteur ID {sensor_id} non trouvé en base. Créez-le dans l'admin."))

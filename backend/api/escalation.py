@@ -1,5 +1,5 @@
 from .models import Sensor, Profile, Ticket, AuditLog
-from .utils import send_alert_email, send_alert_telegram
+from .utils import send_alert_email, send_alert_telegram, send_callmebot_voice
 from .audit import create_audit
 
 def notify_user(user, sensor, measurement, level="USER"):
@@ -10,6 +10,15 @@ def notify_user(user, sensor, measurement, level="USER"):
         return
     send_alert_email(user, sensor, measurement, message)
     send_alert_telegram(user, sensor, measurement, message)
+
+    # Appel vocal pour les niveaux importants
+    if level in ["MANAGER", "SUPERVISOR"]:
+        try:
+            # Message court pour le TTS
+            voice_msg = f"Bonjour {user.username}. Alerte critique sur capteur {sensor.name}. Température {measurement.temperature}."
+            send_callmebot_voice(voice_msg)
+        except Exception:
+            pass
 
     create_audit(
         action="EMAIL_SENT",
