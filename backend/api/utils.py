@@ -57,33 +57,6 @@ def send_alert_telegram(user, sensor, measurement, msg):
         pass
 
 
-def send_critical_webhook(msg, sensor, measurement):
-    """
-    Envoie une alerte critique vers un Webhook externe (n8n, IFTTT, Slack, Discord...).
-    Remplace l'appel vocal.
-    """
-    webhook_url = getattr(settings, 'CRITICAL_WEBHOOK_URL', None)
-
-    if not webhook_url or "webhook.site" in webhook_url:
-        return  # Pas configuré
-
-    payload = {
-        "type": "CRITICAL_ALERT",
-        "message": msg,
-        "sensor_id": sensor.sensor_id,
-        "location": sensor.location,
-        "temperature": measurement.temperature,
-        "humidity": measurement.humidity,
-        "timestamp": str(measurement.timestamp)
-    }
-
-    try:
-        requests.post(webhook_url, json=payload, timeout=5)
-        create_audit("WEBHOOK_SENT", sensor=sensor, details="Critical Webhook sent")
-    except Exception as e:
-        print(f"❌ Erreur Webhook : {e}")
-
-
 def send_alert_notification(sensor, measurement):
     """Envoie email + Telegram"""
     send_alert_email(sensor, measurement)

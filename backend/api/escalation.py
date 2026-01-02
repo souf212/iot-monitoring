@@ -1,5 +1,5 @@
 from .models import Sensor, Profile, Ticket, AuditLog
-from .utils import send_alert_email, send_alert_telegram, send_critical_webhook
+from .utils import send_alert_email, send_alert_telegram
 from .audit import create_audit
 
 def notify_user(user, sensor, measurement, level="USER"):
@@ -10,13 +10,6 @@ def notify_user(user, sensor, measurement, level="USER"):
         return
     send_alert_email(user, sensor, measurement, message)
     send_alert_telegram(user, sensor, measurement, message)
-
-    # Webhook pour les niveaux importants
-    if level in ["MANAGER", "SUPERVISOR"]:
-        try:
-            send_critical_webhook(message, sensor, measurement)
-        except Exception:
-            pass
 
     create_audit(
         action="EMAIL_SENT",
