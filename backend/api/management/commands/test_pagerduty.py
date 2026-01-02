@@ -9,11 +9,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write("🔬 Testing PagerDuty Integration...")
         
-        # Create Dummy Sensor Data
-        class DummySensor:
-            sensor_id = 999
-            name = "TEST_SENSOR"
-            location = "TEST_LOCATION"
+        # Get Real Sensor Data
+        sensor = Sensor.objects.first()
+        if not sensor:
+             self.stdout.write(self.style.ERROR("❌ No sensors found in database. Please add a sensor first."))
+             return
 
         class DummyMeasurement:
             id = 12345
@@ -21,7 +21,6 @@ class Command(BaseCommand):
             humidity = 100.0
             timestamp = timezone.now()
 
-        sensor = DummySensor()
         measurement = DummyMeasurement()
         message = "THIS IS A TEST ALERT TRIGGERED MANUALLY"
 
