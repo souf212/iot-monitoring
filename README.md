@@ -1,8 +1,8 @@
 # 🌡️ IoT Climate Monitor
 
-> **Système de monitoring environnemental en temps réel** avec ESP8266, DHT11, Django (PythonAnywhere) et React (Vercel).
+> **Système de monitoring environnemental Intelligent** avec ESP8266, DHT11, Django (PythonAnywhere) et React (Vercel).
 
-Un projet IoT complet permettant de surveiller la température et l'humidité en temps réel, avec une architecture hybride Cloud/Local optimisée pour contourner les restrictions de pare-feu (Polling HTTP).
+Un projet IoT complet permettant de surveiller la température et l'humidité en temps réel, avec une architecture hybride Cloud/Local résiliente et un système d'alertes intelligent (Email, Telegram, Appel Vocal).
 
 ![Dashboard Preview](https://img.shields.io/badge/Status-Production%20Ready-success)
 ![Python](https://img.shields.io/badge/Python-3.10-blue)
@@ -16,17 +16,18 @@ Un projet IoT complet permettant de surveiller la température et l'humidité en
 
 - [Aperçu](#-aperçu)
 - [Architecture](#-architecture)
-- [Fonctionnalités](#-fonctionnalités)
+- [Fonctionnalités Clés](#-fonctionnalités-clés)
+- [Système d'Alertes & Escalade](#-système-dalertes--escalade)
 - [Installation Locale](#-installation-locale)
 - [Déploiement](#-déploiement)
 - [Utilisation](#-utilisation)
-- [Contribution](#-contribution)
+- [Auteur](#-auteur)
 
 ---
 
 ## 🎯 Aperçu
 
-Ce projet connecte des capteurs physiques à un dashboard cloud accessible de partout.
+Ce projet connecte des capteurs physiques à un dashboard cloud accessible de partout, offrant une supervision proactive des conditions environnementales.
 
 - 📡 **IoT** : ESP8266 + DHT11 (Local)
 - 🌉 **Bridge** : Script Python local assurant la liaison IoT <-> Cloud
@@ -47,19 +48,19 @@ graph TD
     end
 
     subgraph Cloud [Internet]
-        PA[PythonAnywhere (Django API)]
-        Vercel[Vercel (React App)]
+        PA["PythonAnywhere (Django API)"]
+        Vercel["Vercel (React App)"]
         User[Utilisateur]
     end
 
     %% Upload Data (Push)
-    Bridge -- HTTP POST (Data) --> PA
+    Bridge -- "HTTP POST (Data)" --> PA
     
     %% Control LED (Polling)
-    Bridge -- HTTP GET (Polling) --> PA
+    Bridge -- "HTTP GET (Polling)" --> PA
     
     %% Frontend
-    Vercel -- API REST --> PA
+    Vercel -- "API REST" --> PA
     User -- HTTPS --> Vercel
 ```
 
@@ -69,16 +70,39 @@ graph TD
 
 ---
 
-## ✨ Fonctionnalités
+## ✨ Fonctionnalités Clés
 
-### 📊 Dashboard
-- **Temps Réel** : Rafraîchissement automatique des données.
-- **Graphiques** : Historique température/humidité via Recharts.
-- **Indicateurs** : Alertes visuelles et tendances.
+### 📊 Dashboard Monitoring
+- **Temps Réel** : Rafraîchissement automatique des données toutes les 3s.
+- **Graphiques Interactifs** : Historique température/humidité via Recharts.
+- **Indicateurs Visuels** : Codes couleurs dynamiques (Vert/Orange/Rouge) selon les seuils.
 
-### 🎛️ Contrôle
+### 🎛️ Contrôle à Distance
 - **Actionneur** : Allumage/Extinction de LED à distance (latence < 2s).
-- **Administration** : Gestion des utilisateurs et capteurs via Django Admin.
+- **Audit Logs** : Traçabilité complète des actions (qui a cliqué, quand).
+
+### 👥 Gestion RBAC (Role-Based Access Control)
+- **User** : Consultation simple.
+- **Manager** : Gestion des utilisateurs et tickets de son équipe.
+- **Supervisor** : Vue globale sur tous les capteurs et utilisateurs.
+
+---
+
+## 🚨 Système d'Alertes & Escalade
+
+Le projet intègre un puissant moteur de notification multicanal pour garantir qu'aucune anomalie ne passe inaperçue.
+
+### Canaux de Notification
+1. **📧 Email (SMTP)** : Envoi de rapports détaillés via Gmail SMTP.
+2. **📱 Telegram** : Notifications instantanées via Bot API.
+3. **📞 Appel Vocal (CallMeBot)** : Appelle le manager sur son téléphone en cas d'alerte critique.
+
+### Processus d'Escalade Automatique
+Le système surveille le nombre d'alertes consécutives par capteur :
+
+- **Niveau 1 (1-3 alertes)** : Notification **USER** (Responsable direct). Création Ticket "Low".
+- **Niveau 2 (4-6 alertes)** : Escalade **MANAGER**. Notification Email + Telegram. Création Ticket "Medium".
+- **Niveau 3 (> 6 alertes)** : Escalade **SUPERVISOR**. Appel Vocal + Email + Telegram. Création Ticket "High".
 
 ---
 
@@ -123,12 +147,12 @@ python mqtt_bridge.py
 1. Cloner le repo dans une Bash Console.
 2. Créer un virtualenv et installer `requirements.txt`.
 3. Configurer **Web App** pour pointer vers `backend/wsgi.py`.
-4. **Important** : Le fichier `mqtt_bridge.py` ne tourne PAS sur PythonAnywhere. Il tourne sur votre machine locale (ou un Raspberry Pi).
+4. Remplir les variables d'environnement (SMTP, Telegram Token) dans `settings.py`.
 
 ### Frontend : Vercel
 1. Importer le projet GitHub sur Vercel.
 2. Override Build Command : `cd frontend && npm install && npm run build`
-3. Output Directory : `frontend/build` (ou `dist` selon Vite/CRA).
+3. Output Directory : `frontend/build` (ou `dist`).
 4. Environment Variable : `REACT_APP_API_URL` = `https://votre-user.pythonanywhere.com`
 
 ---
@@ -141,11 +165,12 @@ python mqtt_bridge.py
 3. **Ouvrir le Dashboard** : Accédez à votre URL Vercel.
 4. **Action** :
    - Les données du DHT11 remonteront automatiquement.
-   - Cliquez sur le bouton "LED" pour contrôler la lumière.
+   - En cas de dépassement de seuil, vérifiez votre Telegram/Email.
 
 ---
 
 ## 👤 Auteur
 
-**Soufiane**
-- Projet développé dans le cadre du monitoring IoT.
+**Soufiane EL OTMANI**
+- *Ingénieur Logiciel Full Stack & IoT*
+- Projet développé avec passion pour le monitoring industriel.
