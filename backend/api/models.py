@@ -52,7 +52,16 @@ class Measurement(models.Model):
 
     def __str__(self):
         return f"Sensor {self.sensor.sensor_id}: {self.temperature}°C / {self.humidity}%"
-# models.py
+
+class LedState(models.Model):
+    """
+    Stocke l'état de la LED (ON/OFF) pour le polling par le Bridge
+    """
+    state = models.CharField(max_length=10, default="OFF")
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"LED State: {self.state}"
 
 class IncidentAcknowledgement(models.Model):
     LEVEL_CHOICES = [

@@ -124,21 +124,54 @@ def on_hivemq_message(client, userdata, msg):
     except Exception as e:
          print(f"❌ Erreur relais commande : {e}")
 
-def start_hivemq_bridge():
-    """Démarre la connexion HiveMQ dans un thread séparé"""
-    try:
-        hivemq_client.on_connect = on_hivemq_connect
-        hivemq_client.on_message = on_hivemq_message
+# --- POLLING (Cloud -> Local) ---
+def poll_led_status():
+    """
+    Polle régulièrement l'API pour récupérer la dernière commande LED
+    et la publie sur le broker local si elle a changé.
+    """
+    global TOKEN
+    last_known_time = ""
+    
+    API_STATUS_URL = "https://souf.pythonanywhere.com/api/led/status/"
+    
+    print(f"👂 Démarrage du Polling sur {API_STATUS_URL} (Toutes les 2s)")
+
+    while True:
+        try:
+            if not TOKEN:
+                time.sleep(2)
+                continue
+
+            headers = {"Authorization": f"Bearer {TOKEN}"}
+            response = requests.get(API_STATUS_URL, headers=headers, timeout=5)
+
+            if response.status_code == 200:
+                data = response.json()
+                server_state = data.get("state") # ON, OFF
+                server_time = data.get("last_updated")
+
+                # Si c'est la première lecture ou si la commande est plus récente
+                if server_time != last_known_time:
+                    if last_known_time != "": # On ne publie pas au tout premier démarrage pour éviter de spam
+                         print(f"⚡ COMMANDE REÇUE (Polling) : {server_state}")
+                         local_client.publish(LOCAL_TOPIC_CMD, server_state)
+                    
+                    last_known_time = server_time
+            
+            elif response.status_code == 401:
+                print("🔄 Token expiré (Polling), renouvellement...")
+                get_jwt_token()
+
+        except Exception as e:
+            print(f"⚠️ Erreur Polling : {e}")
         
-        # Configuration TLS obligatoire pour HiveMQ Cloud
-        hivemq_client.tls_set(tls_version=ssl.PROTOCOL_TLS)
-        hivemq_client.username_pw_set(HIVEMQ_USER, HIVEMQ_PASSWORD)
-        
-        print(f"🔄 Connexion à HiveMQ ({HIVEMQ_BROKER})...")
-        hivemq_client.connect(HIVEMQ_BROKER, HIVEMQ_PORT, 60)
-        hivemq_client.loop_forever()
-    except Exception as e:
-        print(f"❌ Erreur critique HiveMQ Bridge : {e}")
+        time.sleep(2)
+
+def start_polling_thread():
+    t = threading.Thread(target=poll_led_status)
+    t.daemon = True
+    t.start()
 
 # --- MAIN ---
 if __name__ == "__main__":
@@ -147,10 +180,8 @@ if __name__ == "__main__":
     # Authentification initiale
     get_jwt_token()
 
-    # Démarrage du Bridge HiveMQ (Cloud -> Local) en arrière-plan
-    t = threading.Thread(target=start_hivemq_bridge)
-    t.daemon = True
-    t.start()
+    # Démarrage du Polling (Cloud -> Local) en arrière-plan
+    start_polling_thread()
 
     # Démarrage du Bridge Local (Local -> API)
     local_client.on_connect = on_local_connect

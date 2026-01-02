@@ -73,7 +73,10 @@ class MeasurementSerializer(serializers.ModelSerializer):
         # find or create sensor
         sensor, created = Sensor.objects.get_or_create(
             sensor_id=sensor_id,
-            defaults={"name": f"Sensor-{sensor_id}"}
+            defaults={
+                "name": f"Sensor-{sensor_id}",
+                "user": self.context['request'].user
+            }
         )
 
         # si pas de timestamp fourni

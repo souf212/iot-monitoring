@@ -42,4 +42,5 @@ urlpatterns = [
     path('users/<int:pk>/', UserRetrieveUpdateView.as_view(), name='user-detail'),
     path("latest/", views.latest_json, name="latest_json"),
     path('led/control/', control_led, name='led-control'),
+    path('led/status/', views.get_led_status, name='led-status'),
 ]

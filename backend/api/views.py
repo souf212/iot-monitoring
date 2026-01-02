@@ -13,7 +13,7 @@ from django.contrib.auth.models import User
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from .models import Sensor, Measurement, AuditLog, User, Ticket, IncidentAcknowledgement
+from .models import Sensor, Measurement, AuditLog, User, Ticket, IncidentAcknowledgement, LedState
 from .serializers import SensorSerializer, MeasurementSerializer, AuditLogSerializer, CustomTokenObtainPairSerializer, UserSerializer, TicketSerializer, IncidentAcknowledgementSerializer
 from rest_framework.decorators import action, api_view, permission_classes
 from django.utils.dateparse import parse_datetime
@@ -374,7 +374,7 @@ class TicketViewSet(viewsets.ModelViewSet):
 @permission_classes([AllowAny])
 def control_led(request):
     """
-    Contrôle la LED via HiveMQ Cloud (Secure MQTT)
+    Contrôle la LED via Database (Polling) - Contournement Firewall PA
     Body: {"command": "ON"} ou {"command": "OFF"}
     """
     command = request.data.get('command', '').upper()
@@ -382,35 +382,29 @@ def control_led(request):
     if command not in ['ON', 'OFF']:
         return Response({'error': 'Commande invalide. Utiliser ON ou OFF'}, status=400)
     
+    # Mise à jour de l'état en base de données
     try:
-        # Configuration HiveMQ Cloud
-        broker = settings.MQTT_CLOUD_BROKER
-        port = settings.MQTT_CLOUD_PORT
-        user = settings.MQTT_CLOUD_USER
-        password = settings.MQTT_CLOUD_PASSWORD
-        topic = settings.MQTT_CLOUD_TOPIC_CMD
-
-        # Configuration SSL/TLS pour HiveMQ
-        auth = {'username': user, 'password': password}
-        tls = {'ca_certs': None} # Utilise les certificats racines système par défaut
-
-        publish.single(
-            topic, 
-            command, 
-            hostname=broker,
-            port=port,
-            auth=auth,
-            tls=tls
-        )
+        led_state, created = LedState.objects.get_or_create(id=1)
+        led_state.state = command
+        led_state.save()
         
         return Response({
             'status': 'success',
-            'message': f'LED {command} sent to HiveMQ',
-            'broker': broker
+            'message': f'Commande {command} enregistrée (Polling)',
+            'state': command
         })
     except Exception as e:
-        return Response({
-            'error': "Erreur connexion HiveMQ Cloud",
-            'details': str(e)
-        }, status=502)
+        return Response({'error': str(e)}, status=500)
+
+@api_view(['GET'])
+@permission_classes([AllowAny]) # Sécuriser avec IsAuthenticated si possible, le bridge a un token
+def get_led_status(request):
+    """
+    Endpoint pour le Bridge Local (Polling)
+    """
+    led_state, created = LedState.objects.get_or_create(id=1)
+    return Response({
+        'state': led_state.state,
+        'last_updated': led_state.last_updated
+    })
 
