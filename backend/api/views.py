@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
+from django.conf import settings
 from rest_framework.response import Response
 from .models import Measurement
 from .serializers import MeasurementSerializer
@@ -58,12 +59,15 @@ def measurement_list(request):
 
             # Retour en ordre décroissant pour l'affichage
             qs = Measurement.objects.filter(id__in=[m.id for m in filtered]).order_by("-timestamp")
+        else:
+             # Force descending order for non-alert case too
+             qs = qs.order_by("-timestamp")
 
         serializer = MeasurementSerializer(qs, many=True)
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        serializer = MeasurementSerializer(data=request.data)
+        serializer = MeasurementSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=201)
@@ -370,7 +374,7 @@ class TicketViewSet(viewsets.ModelViewSet):
 @permission_classes([AllowAny])
 def control_led(request):
     """
-    Contrôle la LED via MQTT
+    Contrôle la LED via HiveMQ Cloud (Secure MQTT)
     Body: {"command": "ON"} ou {"command": "OFF"}
     """
     command = request.data.get('command', '').upper()
@@ -379,21 +383,34 @@ def control_led(request):
         return Response({'error': 'Commande invalide. Utiliser ON ou OFF'}, status=400)
     
     try:
-        BROKER = "127.0.0.1"
-        TOPIC = "devices/esp8266-001/cmd/led"
-        
+        # Configuration HiveMQ Cloud
+        broker = settings.MQTT_CLOUD_BROKER
+        port = settings.MQTT_CLOUD_PORT
+        user = settings.MQTT_CLOUD_USER
+        password = settings.MQTT_CLOUD_PASSWORD
+        topic = settings.MQTT_CLOUD_TOPIC_CMD
+
+        # Configuration SSL/TLS pour HiveMQ
+        auth = {'username': user, 'password': password}
+        tls = {'ca_certs': None} # Utilise les certificats racines système par défaut
+
         publish.single(
-            TOPIC, 
+            topic, 
             command, 
-            hostname=BROKER,
-            port=1883
+            hostname=broker,
+            port=port,
+            auth=auth,
+            tls=tls
         )
         
         return Response({
             'status': 'success',
-            'message': f'LED {command}',
-            'topic': TOPIC
+            'message': f'LED {command} sent to HiveMQ',
+            'broker': broker
         })
     except Exception as e:
-        return Response({'error': str(e)}, status=500)
+        return Response({
+            'error': "Erreur connexion HiveMQ Cloud",
+            'details': str(e)
+        }, status=502)
 
