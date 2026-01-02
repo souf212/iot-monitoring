@@ -57,7 +57,46 @@ def send_alert_telegram(user, sensor, measurement, msg):
         pass
 
 
+def send_pagerduty_alert(msg, sensor, measurement):
+    """
+    Envoie une alerte critique à PagerDuty via Events API v2.
+    Cela fera sonner le téléphone de l'astreinte.
+    """
+    routing_key = getattr(settings, 'PAGERDUTY_INTEGRATION_KEY', None)
+
+    if not routing_key or "CHANGE_ME" in routing_key:
+        return # Pas configuré
+
+    url = "https://events.pagerduty.com/v2/enqueue"
+    
+    payload = {
+        "routing_key": routing_key,
+        "event_action": "trigger",
+        "dedup_key": f"sensor-{sensor.sensor_id}-{measurement.id}", # Evite les doublons
+        "payload": {
+            "summary": f"ALERTE CRITIQUE: {msg}",
+            "source": f"Sensor {sensor.name}",
+            "severity": "critical",
+            "custom_details": {
+                "temperature": measurement.temperature,
+                "humidity": measurement.humidity,
+                "location": sensor.location,
+                "timestamp": str(measurement.timestamp)
+            }
+        }
+    }
+
+    try:
+        response = requests.post(url, json=payload, timeout=5)
+        if response.status_code == 202:
+            create_audit("PAGERDUTY_SENT", sensor=sensor, details="PagerDuty alert sent")
+        else:
+            print(f"❌ Erreur PagerDuty: {response.text}")
+    except Exception as e:
+        print(f"❌ Exception PagerDuty: {e}")
+
+
 def send_alert_notification(sensor, measurement):
-    """Envoie email + Telegram"""
+    """Envoie email + Telegram (+ PagerDuty si configuré dans escalation)"""
     send_alert_email(sensor, measurement)
     send_alert_telegram(sensor, measurement)

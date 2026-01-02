@@ -1,5 +1,5 @@
 from .models import Sensor, Profile, Ticket, AuditLog
-from .utils import send_alert_email, send_alert_telegram
+from .utils import send_alert_email, send_alert_telegram, send_pagerduty_alert
 from .audit import create_audit
 
 def notify_user(user, sensor, measurement, level="USER"):
@@ -10,6 +10,10 @@ def notify_user(user, sensor, measurement, level="USER"):
         return
     send_alert_email(user, sensor, measurement, message)
     send_alert_telegram(user, sensor, measurement, message)
+
+    # PagerDuty pour le SUPERVISOR (Niveau 3)
+    if level == "SUPERVISOR":
+        send_pagerduty_alert(message, sensor, measurement)
 
     create_audit(
         action="EMAIL_SENT",

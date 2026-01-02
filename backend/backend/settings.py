@@ -165,6 +165,7 @@ EMAIL_HOST_USER = "souf2001elotmani@gmail.com"
 EMAIL_HOST_PASSWORD = "khdv jexx ycje urnx"
 TELEGRAM_BOT_TOKEN = "8573703765:AAE7V_E9NC-g9l5MvBYUwJpksOrcFK-U0f4"
 TELEGRAM_CHAT_ID = "927378003"
+PAGERDUTY_INTEGRATION_KEY = "CHANGE_ME" # Clé d'intégration (Events API v2)
 
 
 # HiveMQ Cloud Configuration
