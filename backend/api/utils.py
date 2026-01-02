@@ -61,11 +61,13 @@ def send_pagerduty_alert(msg, sensor, measurement):
     """
     Envoie une alerte critique à PagerDuty via Events API v2.
     Cela fera sonner le téléphone de l'astreinte.
+    Returns: True if sent, False otherwise.
     """
     routing_key = getattr(settings, 'PAGERDUTY_INTEGRATION_KEY', None)
 
     if not routing_key or "CHANGE_ME" in routing_key:
-        return # Pas configuré
+        print("⚠️ PagerDuty non configuré (Clé manquante ou 'CHANGE_ME')")
+        return False
 
     url = "https://events.pagerduty.com/v2/enqueue"
     
@@ -90,10 +92,13 @@ def send_pagerduty_alert(msg, sensor, measurement):
         response = requests.post(url, json=payload, timeout=5)
         if response.status_code == 202:
             create_audit("PAGERDUTY_SENT", sensor=sensor, details="PagerDuty alert sent")
+            return True
         else:
             print(f"❌ Erreur PagerDuty: {response.text}")
+            return False
     except Exception as e:
         print(f"❌ Exception PagerDuty: {e}")
+        return False
 
 
 def send_alert_notification(sensor, measurement):

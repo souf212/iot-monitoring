@@ -27,7 +27,11 @@ class Command(BaseCommand):
 
         try:
             self.stdout.write(f"📤 Sending mock alert to PagerDuty...")
-            send_pagerduty_alert(message, sensor, measurement)
-            self.stdout.write(self.style.SUCCESS("✅ Request sent (Check PagerDuty Dashboard)"))
+            success = send_pagerduty_alert(message, sensor, measurement)
+            
+            if success:
+                self.stdout.write(self.style.SUCCESS("✅ Request sent (Check PagerDuty Dashboard)"))
+            else:
+                self.stdout.write(self.style.WARNING("⚠️ Request NOT sent. Check your PAGERDUTY_INTEGRATION_KEY in settings.py"))
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"❌ Error sending alert: {e}"))
