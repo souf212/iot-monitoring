@@ -95,14 +95,14 @@ Le projet intègre un puissant moteur de notification multicanal pour garantir q
 ### Canaux de Notification
 1. **📧 Email (SMTP)** : Envoi de rapports détaillés via Gmail SMTP.
 2. **📱 Telegram** : Notifications instantanées via Bot API.
-3. **📞 Appel Vocal (CallMeBot)** : Appelle le manager sur son téléphone en cas d'alerte critique.
+3. **🌐 Webhook Critique** : Intégration générique (n8n, Zapier, Slack) pour les alertes majeures. Remplace le CallMeBot déprécié.
 
 ### Processus d'Escalade Automatique
 Le système surveille le nombre d'alertes consécutives par capteur :
 
 - **Niveau 1 (1-3 alertes)** : Notification **USER** (Responsable direct). Création Ticket "Low".
 - **Niveau 2 (4-6 alertes)** : Escalade **MANAGER**. Notification Email + Telegram. Création Ticket "Medium".
-- **Niveau 3 (> 6 alertes)** : Escalade **SUPERVISOR**. Appel Vocal + Email + Telegram. Création Ticket "High".
+- **Niveau 3 (> 6 alertes)** : Escalade **SUPERVISOR**. Webhook Critique + Email + Telegram. Création Ticket "High".
 
 ---
 

@@ -165,8 +165,7 @@ EMAIL_HOST_USER = "souf2001elotmani@gmail.com"
 EMAIL_HOST_PASSWORD = "khdv jexx ycje urnx"
 TELEGRAM_BOT_TOKEN = "8573703765:AAE7V_E9NC-g9l5MvBYUwJpksOrcFK-U0f4"
 TELEGRAM_CHAT_ID = "927378003"
-CALLMEBOT_USERNAME = "@CHANGE_ME"  # Mettez votre username Telegram (ex: @souf212)
-CALLMEBOT_API_KEY = "CHANGE_ME"    # Obtenu via @CallMeBot_txtbot
+CRITICAL_WEBHOOK_URL = "https://webhook.site/..."  # Remplacer par votre Webhook n8n ou autre
 
 
 # HiveMQ Cloud Configuration
