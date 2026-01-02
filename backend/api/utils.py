@@ -57,51 +57,43 @@ def send_alert_telegram(user, sensor, measurement, msg):
         pass
 
 
-def send_pagerduty_alert(msg, sensor, measurement):
+def send_twilio_alert(msg, sensor, measurement):
     """
-    Envoie une alerte critique à PagerDuty via Events API v2.
-    Cela fera sonner le téléphone de l'astreinte.
-    Returns: True if sent, False otherwise.
+    Envoie un appel vocal via Twilio.
+    Remplace PagerDuty pour les pays non supportés (ex: Maroc).
     """
-    routing_key = getattr(settings, 'PAGERDUTY_INTEGRATION_KEY', None)
+    account_sid = getattr(settings, 'TWILIO_ACCOUNT_SID', None)
+    auth_token = getattr(settings, 'TWILIO_AUTH_TOKEN', None)
+    from_number = getattr(settings, 'TWILIO_PHONE_NUMBER', None)
+    to_number = getattr(settings, 'TARGET_PHONE_NUMBER', None)
 
-    if not routing_key or "CHANGE_ME" in routing_key:
-        print("⚠️ PagerDuty non configuré (Clé manquante ou 'CHANGE_ME')")
+    if not account_sid or "CHANGE_ME" in account_sid:
+        print("⚠️ Twilio non configuré (SID manquant)")
         return False
 
-    url = "https://events.pagerduty.com/v2/enqueue"
-    
-    payload = {
-        "routing_key": routing_key,
-        "event_action": "trigger",
-        "dedup_key": f"sensor-{sensor.sensor_id}-{measurement.id}", # Evite les doublons
-        "payload": {
-            "summary": f"ALERTE CRITIQUE: {msg}",
-            "source": f"Sensor {sensor.name}",
-            "severity": "critical",
-            "custom_details": {
-                "temperature": measurement.temperature,
-                "humidity": measurement.humidity,
-                "location": sensor.location,
-                "timestamp": str(measurement.timestamp)
-            }
-        }
-    }
-
     try:
-        response = requests.post(url, json=payload, timeout=5)
-        if response.status_code == 202:
-            create_audit("PAGERDUTY_SENT", sensor=sensor, details="PagerDuty alert sent")
-            return True
-        else:
-            print(f"❌ Erreur PagerDuty: {response.text}")
-            return False
+        from twilio.rest import Client
+        client = Client(account_sid, auth_token)
+
+        # Message TwiML pour le TTS (Text-To-Speech)
+        twiml_msg = f"<Response><Say language='fr-FR'>Alerte Critique sur le capteur {sensor.name}. Température de {measurement.temperature} degrés. Veuillez intervenir immédiatement.</Say></Response>"
+
+        call = client.calls.create(
+            twiml=twiml_msg,
+            to=to_number,
+            from_=from_number
+        )
+        
+        print(f"✅ Appel Twilio lancé: {call.sid}")
+        create_audit("Twilio_SENT", sensor=sensor, details=f"Voice call sent to {to_number}")
+        return True
+
     except Exception as e:
-        print(f"❌ Exception PagerDuty: {e}")
+        print(f"❌ Erreur Twilio: {e}")
         return False
 
 
 def send_alert_notification(sensor, measurement):
-    """Envoie email + Telegram (+ PagerDuty si configuré dans escalation)"""
+    """Envoie email + Telegram (+ Appel Twilio si critique)"""
     send_alert_email(sensor, measurement)
     send_alert_telegram(sensor, measurement)

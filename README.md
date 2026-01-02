@@ -95,14 +95,14 @@ Le projet intègre un puissant moteur de notification multicanal pour garantir q
 ### Canaux de Notification
 1. **📧 Email (SMTP)** : Envoi de rapports détaillés via Gmail SMTP.
 2. **📱 Telegram** : Notifications instantanées via Bot API.
-3. **🚨 PagerDuty** : Alerte téléphonique critique (Siren/Call) pour les incidents majeurs.
+3. **📞 Twilio** : Appel vocal GSM prioritaire pour les incidents majeurs.
 
 ### Processus d'Escalade Automatique
 Le système surveille le nombre d'alertes consécutives par capteur :
 
 - **Niveau 1 (1-3 alertes)** : Notification **USER** (Responsable direct). Création Ticket "Low".
 - **Niveau 2 (4-6 alertes)** : Escalade **MANAGER**. Notification Email + Telegram. Création Ticket "Medium".
-- **Niveau 3 (> 6 alertes)** : Escalade **SUPERVISOR**. PagerDuty + Email + Telegram. Création Ticket "High".
+- **Niveau 3 (> 6 alertes)** : Escalade **SUPERVISOR**. Twilio (Appel) + Email + Telegram. Création Ticket "High".
 
 ---
 
