@@ -46,7 +46,11 @@ INSTALLED_APPS = [
 ]
 
 # Optional but useful
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOWED_ORIGINS = [
+    "https://iot-monitoring-iota.vercel.app",
+    "http://localhost:3000",
+]
+CORS_ALLOW_CREDENTIALS = True
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -165,3 +169,9 @@ CALLMEBOT_USERNAME = "@CHANGE_ME"  # Mettez votre username Telegram (ex: @souf21
 CALLMEBOT_API_KEY = "CHANGE_ME"    # Obtenu via @CallMeBot_txtbot
 
 
+# HiveMQ Cloud Configuration
+MQTT_CLOUD_BROKER = "ebd48b34f0024d7da700e7542962d530.s1.eu.hivemq.cloud"
+MQTT_CLOUD_PORT = 8883
+MQTT_CLOUD_USER = "soufiane"
+MQTT_CLOUD_PASSWORD = "Souf0000"
+MQTT_CLOUD_TOPIC_CMD = "devices/esp8266-001/cmd/led"
