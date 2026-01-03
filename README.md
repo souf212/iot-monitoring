@@ -147,10 +147,26 @@ python mqtt_bridge.py
 1. Cloner le repo dans une Bash Console.
 2. Créer un virtualenv et installer `requirements.txt`.
 3. Configurer **Web App** pour pointer vers `backend/wsgi.py`.
-4. Remplir les variables d'environnement dans `settings.py` ou le `.env` :
-   - `EMAIL_HOST_USER` / `EMAIL_HOST_PASSWORD` (SMTP Gmail)
-   - `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID`
-   - `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN` / `TWILIO_PHONE_NUMBER` / `TARGET_PHONE_NUMBER` (Pour les alertes vocales)
+4. **Configuration sécurisée** :
+   Ce projet utilise `python-dotenv` pour gérer les secrets.
+   - Copiez le fichier exemple : `cp backend/.env.example backend/.env`
+   - Remplissez le fichier `backend/.env` avec vos clés :
+   
+   ```ini
+   # Email (SMTP Gmail)
+   EMAIL_HOST_USER=votre_email@gmail.com
+   EMAIL_HOST_PASSWORD=votre_mot_de_passe_app
+
+   # Telegram (Bot Father)
+   TELEGRAM_BOT_TOKEN=votre_token
+   TELEGRAM_CHAT_ID=votre_chat_id
+
+   # Twilio (Alertes Vocales - Optionnel)
+   TWILIO_ACCOUNT_SID=AC...           # Depuis la console Twilio
+   TWILIO_AUTH_TOKEN=...              # Votre Token d'auth
+   TWILIO_PHONE_NUMBER=+1555...       # Numéro offert par Twilio
+   TARGET_PHONE_NUMBER=+212...        # Votre numéro personnel (ex: +33...)
+   ```
 
 ### Frontend : Vercel
 1. Importer le projet GitHub sur Vercel.
