@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 from datetime import timedelta
 from django.conf.global_settings import STATICFILES_DIRS
 
@@ -161,20 +164,20 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "souf2001elotmani@gmail.com"
-EMAIL_HOST_PASSWORD = "khdv jexx ycje urnx"
-TELEGRAM_BOT_TOKEN = "8573703765:AAE7V_E9NC-g9l5MvBYUwJpksOrcFK-U0f4"
-TELEGRAM_CHAT_ID = "927378003"
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 # Twilio Configuration (Voice Calls)
-TWILIO_ACCOUNT_SID = "CHANGE_ME"
-TWILIO_AUTH_TOKEN = "CHANGE_ME"
-TWILIO_PHONE_NUMBER = "CHANGE_ME" # Ton numéro Twilio (+1...)
-TARGET_PHONE_NUMBER = "CHANGE_ME" # Ton numéro Marocain (+212...)
+TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
+TWILIO_PHONE_NUMBER = os.getenv('TWILIO_PHONE_NUMBER')
+TARGET_PHONE_NUMBER = os.getenv('TARGET_PHONE_NUMBER')
 
 
 # HiveMQ Cloud Configuration
-MQTT_CLOUD_BROKER = "ebd48b34f0024d7da700e7542962d530.s1.eu.hivemq.cloud"
-MQTT_CLOUD_PORT = 8883
-MQTT_CLOUD_USER = "soufiane"
-MQTT_CLOUD_PASSWORD = "Souf0000"
+MQTT_CLOUD_BROKER = os.getenv('MQTT_CLOUD_BROKER', "ebd48b34f0024d7da700e7542962d530.s1.eu.hivemq.cloud")
+MQTT_CLOUD_PORT = int(os.getenv('MQTT_CLOUD_PORT', 8883))
+MQTT_CLOUD_USER = os.getenv('MQTT_CLOUD_USER', "soufiane")
+MQTT_CLOUD_PASSWORD = os.getenv('MQTT_CLOUD_PASSWORD', "Souf0000")
 MQTT_CLOUD_TOPIC_CMD = "devices/esp8266-001/cmd/led"

@@ -27,8 +27,8 @@ class Sensor(models.Model):
         related_name="sensors"
     )
     alert_count = models.IntegerField(default=0)
-    min_temp = models.FloatField(default=2)
-    max_temp = models.FloatField(default=8)
+    min_temp = models.FloatField(default=15)
+    max_temp = models.FloatField(default=25)
 
     def __str__(self):
         return f"{self.name} (#{self.sensor_id})"

@@ -147,7 +147,10 @@ python mqtt_bridge.py
 1. Cloner le repo dans une Bash Console.
 2. Créer un virtualenv et installer `requirements.txt`.
 3. Configurer **Web App** pour pointer vers `backend/wsgi.py`.
-4. Remplir les variables d'environnement (SMTP, Telegram Token) dans `settings.py`.
+4. Remplir les variables d'environnement dans `settings.py` ou le `.env` :
+   - `EMAIL_HOST_USER` / `EMAIL_HOST_PASSWORD` (SMTP Gmail)
+   - `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID`
+   - `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN` / `TWILIO_PHONE_NUMBER` / `TARGET_PHONE_NUMBER` (Pour les alertes vocales)
 
 ### Frontend : Vercel
 1. Importer le projet GitHub sur Vercel.
@@ -166,6 +169,18 @@ python mqtt_bridge.py
 4. **Action** :
    - Les données du DHT11 remonteront automatiquement.
    - En cas de dépassement de seuil, vérifiez votre Telegram/Email.
+
+---
+
+## 🛠️ Administration
+
+### Gestion des Seuils
+Une commande de management est disponible pour mettre à jour massivement les seuils de tous les capteurs (par défaut 15°C - 25°C). Utile pour réinitialiser la configuration après un déploiement.
+
+```bash
+# Dans le dossier backend/
+python manage.py update_thresholds
+```
 
 ---
 
